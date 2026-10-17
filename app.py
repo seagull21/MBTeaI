@@ -75,7 +75,7 @@ if st.session_state.page == 0:
     st.title("MBTeaI🍵")
     st.write("全5問のアンケートに答えて、あなたにあうお茶を探そう！")
     
-    if st.button("お茶探しを始める", type="primary", use_container_width=True):
+    if st.button("お茶探しを始める", type="primary", use_container_width=True, key="start_btn"):
         st.session_state.answers = []
         st.session_state.page = 1
         st.rerun()
@@ -98,7 +98,7 @@ elif 1 <= st.session_state.page <= 5:
     # スマホ表示時（縦並び）に「次へ」が先頭に来るよう col1 に「次へ」を配置
     col1, col2 = st.columns(2)
     with col1:
-        if st.button("次へ", type="primary", use_container_width=True):
+        if st.button("次へ", type="primary", use_container_width=True, key=f"next_btn_{q_idx}"):
             if len(st.session_state.answers) > q_idx:
                 st.session_state.answers[q_idx] = choice
             else:
@@ -109,7 +109,7 @@ elif 1 <= st.session_state.page <= 5:
             
     with col2:
         if st.session_state.page > 1:
-            if st.button("戻る", use_container_width=True):
+            if st.button("戻る", use_container_width=True, key=f"back_btn_{q_idx}"):
                 st.session_state.page -= 1
                 st.rerun()
 
@@ -139,13 +139,7 @@ elif st.session_state.page == 6:
         st.write(f"・**{questions[i]['q']}** → {ans}")
     
     st.write("")
-    if st.button("最初に戻る", type="primary", use_container_width=True):
-        st.session_state.page = 0
-        st.session_state.answers = []
-        st.rerun()
-    
-    st.write("")
-    if st.button("最初に戻る", type="primary", use_container_width=True):
+    if st.button("最初に戻る", type="primary", use_container_width=True, key="reset_btn"):
         st.session_state.page = 0
         st.session_state.answers = []
         st.rerun()
