@@ -3,6 +3,22 @@ import streamlit as st
 # ページの設定
 st.set_page_config(page_title="MBTeaI", page_icon="📝", layout="centered")
 
+# スマホ表示での不自然な単語途中改行を防ぐCSSの設定
+st.markdown(
+    """
+    <style>
+    div[data-testid="stMarkdownContainer"] p, 
+    div[data-testid="stMarkdownContainer"] h1, 
+    div[data-testid="stMarkdownContainer"] h2, 
+    div[data-testid="stMarkdownContainer"] h3 {
+        word-break: keep-all;
+        overflow-wrap: break-word;
+    }
+    </style>
+    """,
+    unsafe_allow_html=True
+)
+
 # セッション状態の初期化
 if "page" not in st.session_state:
     st.session_state.page = 0  # 0: スタート, 1~5: 質問1~5, 6: 結果
@@ -10,7 +26,6 @@ if "answers" not in st.session_state:
     st.session_state.answers = []
 
 # 質問リスト（計5問）
-# ※ 質問3・4・5 の回答（0か1）の組み合わせで8パターンの結果を判定します
 questions = [
     {"q": "質問1：あなたはどちらのタイプ？", "choices": ["1つのものを極めたい", "色々なものを試したい"]},
     {"q": "質問2：魅力を感じるのは？", "choices": ["見た目では分からない奥深さ", "第一印象から分かる個性"]},
@@ -20,7 +35,6 @@ questions = [
 ]
 
 # 8パターンの結果の定義 (質問3, 質問4, 質問5 の選択順)
-# キーは (Q3の選択肢, Q4の選択肢, Q5の選択肢)
 results_map = {
     ("だしの効いた料理", "まろやかで甘い味", "あったかい飲み物"): {
         "title": "【タイプ：りん】〇〇派",
@@ -81,13 +95,9 @@ elif 1 <= st.session_state.page <= 5:
     )
     
     st.write("")
+    # スマホ表示時（縦並び）に「次へ」が先頭に来るよう col1 に「次へ」を配置
     col1, col2 = st.columns(2)
     with col1:
-        if st.session_state.page > 1:
-            if st.button("戻る", use_container_width=True):
-                st.session_state.page -= 1
-                st.rerun()
-    with col2:
         if st.button("次へ", type="primary", use_container_width=True):
             if len(st.session_state.answers) > q_idx:
                 st.session_state.answers[q_idx] = choice
@@ -96,6 +106,12 @@ elif 1 <= st.session_state.page <= 5:
             
             st.session_state.page += 1
             st.rerun()
+            
+    with col2:
+        if st.session_state.page > 1:
+            if st.button("戻る", use_container_width=True):
+                st.session_state.page -= 1
+                st.rerun()
 
 # --- ページ6：結果画面 ---
 elif st.session_state.page == 6:
@@ -121,6 +137,12 @@ elif st.session_state.page == 6:
     st.subheader("📋 あなたの回答一覧")
     for i, ans in enumerate(st.session_state.answers):
         st.write(f"・**{questions[i]['q']}** → {ans}")
+    
+    st.write("")
+    if st.button("最初に戻る", type="primary", use_container_width=True):
+        st.session_state.page = 0
+        st.session_state.answers = []
+        st.rerun()
     
     st.write("")
     if st.button("最初に戻る", type="primary", use_container_width=True):
