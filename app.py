@@ -1,7 +1,7 @@
 import streamlit as st
 
 # ページの設定
-st.set_page_config(page_title="二択アンケート", page_icon="📝", layout="centered")
+st.set_page_config(page_title="MBTeaI", page_icon="📝", layout="centered")
 
 # セッション状態の初期化
 if "page" not in st.session_state:
@@ -58,10 +58,10 @@ results_map = {
 
 # --- ページ0：スタート画面 ---
 if st.session_state.page == 0:
-    st.title("📝 診断アンケート")
-    st.write("全5問のアンケートに答えて、あなたのタイプを診断してみましょう！")
+    st.title("MBTeaI🍵")
+    st.write("全5問のアンケートに答えて、あなたにあうお茶を探そう！")
     
-    if st.button("アンケートを始める", type="primary", use_container_width=True):
+    if st.button("お茶探しを始める", type="primary", use_container_width=True):
         st.session_state.answers = []
         st.session_state.page = 1
         st.rerun()
